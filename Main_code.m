@@ -35,9 +35,11 @@ POUT = [x(1:4)';y(1:4)';[1,1,1,1]];
 pm = [0 , 6.8 , 6.8 , 0 ; ...
     0 , 0 , 14, 14];...
   
-PIN = cat(1,pm*10^(-2),[1,1,1,1])
+PIN = cat(1,pm*10^(-2),[1,1,1,1]);
 
 %POUT = [x(5:8)';y(5:8)'];
+% PIN = cat(1,PIN(1,:),PIN(2,:));
+% POUT = cat(1,POUT(1,:),POUT(2,:));
 % Normalization 
 u_ = mean (PIN(1,:));
 v_ =  mean (PIN(2,:));
@@ -58,9 +60,9 @@ Tout = so*[1, 0 , -u_o ;...
        0, 1 , -v_o ;...
        0, 0 , 1/so];
 for i=1:n 
+    PIN(:,i)
     PIN(:,i) = Tin*PIN(:,i);
     POUT(:,i) = Tout*POUT(:,i);
-
 end 
 
 PIN = cat(1,PIN(1,:),PIN(2,:));
