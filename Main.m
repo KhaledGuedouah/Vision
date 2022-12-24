@@ -39,12 +39,14 @@ while hasFrame(videoReader)
           hold on
           plot([P_projected(1,i),p1(1,i)],[P_projected(2,i),p1(2,i)],'y-',LineWidth=3)
       end
+      %Tracé des points projetés 
       plot(P_projected(1,:), P_projected(2,:),'b',LineWidth=2)
       hold on
+      %Tracé des points appartenant au pattern 
       plot(p1(1,:),p1(2,:),'r',LineWidth=2)
       hold on
       %Pause pour montré le mouvement de la video
-      pause(0.00000000000000000000001);
+      pause(0.01);
       % Mise a jour des points 
       x_old=x_new;
       y_old=y_new;
