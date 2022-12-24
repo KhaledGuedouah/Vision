@@ -30,7 +30,6 @@ Tout = so*[1, 0 , -u_o ;...
           0, 1 , -v_o ;...
           0, 0 , 1/so];
 for i=1:n 
-    PIN(:,i)
     PIN(:,i) = Tin*PIN(:,i);
     POUT(:,i) = Tout*POUT(:,i);
 end 

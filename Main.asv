@@ -1,7 +1,7 @@
 %   Main script
 close all ;
 clear all ;
-load('calibrationSession.mat');
+load('calibrationSession.mat')
 K= GetCameraParams(calibrationSession);
 
 %object tracking using a video
