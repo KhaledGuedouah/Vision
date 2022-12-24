@@ -1,10 +1,11 @@
 function [P] = Projection_matrix(PIN,POUT,K)
 %UNTITLED Summary of this function goes here
-
-n = 5 ;
 %   Detailed explanation goes here
-PIN = [PIN(:,1)';PIN(:,2)';[1,1,1,1,1]]
-POUT = [POUT(:,1)';POUT(:,1)';[1,1,1,1,1]]
+
+n = 4 ;
+PIN = [PIN(:,1)';PIN(:,2)';[1,1,1,1]];
+POUT = [POUT(:,1)';POUT(:,1)';[1,1,1,1]];
+
 % Normalization 
 u_ = mean (PIN(1,:));
 v_ =  mean (PIN(2,:));
@@ -30,8 +31,8 @@ for i=1:n
     POUT(:,i) = Tout*POUT(:,i);
 end 
 
-% PIN = cat(1,PIN(1,:),PIN(2,:));
-% POUT = cat(1,POUT(1,:),POUT(2,:));
+PIN = cat(1,PIN(1,:),PIN(2,:));
+POUT = cat(1,POUT(1,:),POUT(2,:));
 
 %Finding homography matrix
 Hbefore=homography_solve(PIN,POUT);

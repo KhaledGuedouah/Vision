@@ -1,5 +1,5 @@
-location = 'C:\Users\ferie\OneDrive\Bureau\M1 ISI\Vision\Projet_vision\Vision\Newcarre';       %  folder in which your images exists
-ds = imageDatastore(location);      %  Creates a datastore for all images in your folder
+% location = 'C:\Users\ferie\OneDrive\Bureau\M1 ISI\Vision\Projet_vision\Vision\Newcarre';       %  folder in which your images exists
+% ds = imageDatastore(location);      %  Creates a datastore for all images in your folder
 
 % Tracker = vision.PointTracker; % creating a point tracker object
 % 
@@ -43,30 +43,48 @@ ds = imageDatastore(location);      %  Creates a datastore for all images in you
 % %end
 % 
 % 
+%getting intrinsic parameters 
+close all ;
+load('calibrationSession.mat')
+K= GetCameraParams(calibrationSession);
 
 %object tracking using a video
 videoReader = VideoReader('VID_20221224_003628.avi');
 objectFrame = readFrame(videoReader);
 imshow(objectFrame);
 objectRegion=ginput(4);
+[x_old,y_old] = ginput(4);
 
-P_old=objectRegion;
+% P_old=cat(1,objectRegion,objectRegion(1,:));
+
 
 tracker = vision.PointTracker('MaxBidirectionalError',1);
 initialize(tracker,objectRegion,objectFrame);
 while hasFrame(videoReader)
       frame = readFrame(videoReader);
       [points,validity] = tracker(frame);
-%       points = cat(1,points,points(1,:));
-%       x=points(:,1).';
-%       y=points(:,2).';
-%       p_old=[x;y;ones(1,5);ones(1,5)]
-%       p_proj= P*p1
-      P_new=
+ %      points = cat(1,points,points(1,:));
+      plot(points(:,1),points(:,2),'r',LineWidth=2);
+      x_new = points(:,1);
+      y_new = points(:,2);
+      P=Projection_matrix(x_new,y_new,x_old,x_old,K);
+      P_projected=Projection(x_new,y_new,P);
+% 
       imshow(frame); % creates a new window for each image
-      plot(p_proj(1,:),p_proj(2,:),'b',LineWidth=2)
       hold on
-      plot(x,y,LineWidth=2,Color="red");
+
+      for i=1:5
+          hold on
+          plot([P_projected(1,i),points(1,i)],[P_projected(2,i),points(2,i)],'y-',LineWidth=3)
+      end
+      plot(P_projected(:,1), P_projected(:,2),'b',LineWidth=2)
+      hold on
+      plot(points(1),points(:,2),'r',LineWidth=2);
+      hold on
       pause(0.1);
+
+      x_old=x_new;
+      y_old=y_new;
     
 end
+

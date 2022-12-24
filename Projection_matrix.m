@@ -1,10 +1,11 @@
-function [P] = Projection_matrix(PIN,POUT,K)
+function [P] = Projection_matrix(x1,y1,x2,y2,K)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+ 
+n = 4 ;
+PIN = [x1(1:4)';y1(1:4)';[1,1,1,1]];
 
-n = 5 ;
-PIN = [PIN(:,1)';PIN(:,2)';[1,1,1,1,1]];
-POUT = [POUT(:,1)';POUT(:,1)';[1,1,1,1,1]];
+POUT = [x2(1:4)';y2(1:4)';[1,1,1,1]];
 
 % Normalization 
 u_ = mean (PIN(1,:));
@@ -34,12 +35,16 @@ end
 PIN = cat(1,PIN(1,:),PIN(2,:));
 POUT = cat(1,POUT(1,:),POUT(2,:));
 
-%Finding homography matrix
 Hbefore=homography_solve(PIN,POUT);
-H=inv(Tout)*Hbefore*Tin ;
-H =H/H(3,3);
+%Hsans=homography_solve(PIN,POUT)
 
-%Finding Projection matrix
+H=inv(Tout)*Hbefore*Tin ;
+%H=homography_solve(PIN,POUT);
+H =H/H(3,3);
+%out = homwarp(H, img);
+%imshow(out)
+
+
 RRT = inv(K)*H;
 Re1= RRT(:,1);
 Re2= RRT(:,2);
@@ -50,7 +55,7 @@ R1 = Re1/alpha;
 R2 = Re2/alpha;
 R3 = Re3/alpha^2;
 R = [R1,R2,R3];
-detR= det(R);
+% detR= det(R);
 T = Te/alpha ;
 RT = cat(2,R,T);
 P = alpha*K*RT;
