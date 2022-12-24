@@ -5,7 +5,7 @@ load('calibrationSession.mat')
 K= GetCameraParams(calibrationSession);
 
 %object tracking using a video
-videoReader = VideoReader('Vid.avi');
+videoReader = VideoReader('TestVideo.avi');
 objectFrame = readFrame(videoReader);
 % Premier frame de la video
 imshow(objectFrame);
