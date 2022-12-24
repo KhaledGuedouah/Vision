@@ -26,16 +26,22 @@
 % POUT = [p1(1),p2(1),p3(1),p4(1);...
 % p1(2),p2(2),p3(2),p4(2)];
 load('calibrationSession.mat')
-img = imread("Pattern.png");
+%img = imread("Pattern.png");
+img1 = imread("new.png");
 n = 4 ;
-imshow(img)
+imshow(img1)
 [x,y]=ginput(n);
 %[x,y]=ginput(8);
 POUT = [x(1:4)';y(1:4)';[1,1,1,1]];
-pm = [0 , 6.8 , 6.8 , 0 ; ...
-    0 , 0 , 14, 14];...
-  
-PIN = cat(1,pm*10^(-2),[1,1,1,1]);
+% pm = [0 , 6.8 , 6.8 , 0 ; ...
+%     0 , 0 , 14, 14];...
+%   
+% PIN = cat(1,pm*10^(-2),[1,1,1,1]);
+%img2 = imread("carre2.JPG");
+img2 = imread("new.png");
+imshow(img2)
+[x2,y2]=ginput(n);
+PIN = [x2(1:4)';y2(1:4)';[1,1,1,1]];
 
 %POUT = [x(5:8)';y(5:8)'];
 % PIN = cat(1,PIN(1,:),PIN(2,:));
@@ -48,17 +54,17 @@ v_o =  mean (POUT(2,:));
 sm = 0;
 smo = 0;
 for i=1:n 
-    sm = sm +sqrt((PIN(1,i)-u_)^2 + (PIN(2,i)-v_)^2);
+    sm = sm + sqrt((PIN(1,i)-u_)^2 + (PIN(2,i)-v_)^2);
     smo = smo +sqrt((POUT(1,i)-u_o)^2 + (POUT(2,i)-v_o)^2);
 end 
 s = sqrt(2)*n/sm ;
 so = sqrt(2)*n/smo ;
 Tin = s*[1, 0 , -u_ ;...
-       0, 1 , -v_ ;...
-       0, 0 , 1/s];
+        0, 1 , -v_ ;...
+        0, 0 , 1/s];
 Tout = so*[1, 0 , -u_o ;...
-       0, 1 , -v_o ;...
-       0, 0 , 1/so];
+          0, 1 , -v_o ;...
+          0, 0 , 1/so];
 for i=1:n 
     PIN(:,i)
     PIN(:,i) = Tin*PIN(:,i);
@@ -67,6 +73,7 @@ end
 
 PIN = cat(1,PIN(1,:),PIN(2,:));
 POUT = cat(1,POUT(1,:),POUT(2,:));
+
 Hbefore=homography_solve(PIN,POUT);
 %Hsans=homography_solve(PIN,POUT)
 
@@ -92,5 +99,20 @@ T = Te/alpha ;
 RT = cat(2,R,T);
 P = alpha*K*RT;
 
+%plotting the output
+imshow(img1)
+x=cat(1,x,x(1));
+y=cat(1,y,y(1));
+p1=[x';y';ones(1,5);ones(1,5)];
+p_proj= P*p1;
+
+for i=1:5
+    hold on
+    plot([p_proj(1,i),p1(1,i)],[p_proj(2,i),p1(2,i)],'y-',LineWidth=3)
+end
+
+plot(p_proj(1,:),p_proj(2,:),'b',LineWidth=2)
+hold on 
+plot(p1(1,:),p1(2,:),'r',LineWidth=2)
 
 

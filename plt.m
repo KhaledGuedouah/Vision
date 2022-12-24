@@ -13,6 +13,9 @@ hold on
 
 %hold on
 %plot(x,y,LineWidth=2,Color="blue")
+
+
+
 xn = zeros (1,5) ;
 yn = zeros(1,5) ;
 xd =  cat(2,transpose(x),x(1));
