@@ -1,13 +1,16 @@
 function [P] = Projection_matrix(x1,y1,x2,y2,K)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
- 
-n = 4 ;
-PIN = [x1(1:4)';y1(1:4)';[1,1,1,1]];
+%Cette Fonction renvoie la matrice de Projection a partir de points 
+% x1 : La composante x des coordonnées des points en entrée 
+% y1 : La composante y des coordonnées des points en entrée
+% x2 : La composante x des coordonnées des points en sortie
+% y2 : La composante y des coordonnées des points en sortie 
+% K : Parametre insrinseque de la camera
 
+n = 4 ; % Nombre de points 
+PIN = [x1(1:4)';y1(1:4)';[1,1,1,1]];
 POUT = [x2(1:4)';y2(1:4)';[1,1,1,1]];
 
-% Normalization 
+% Normalization des points
 u_ = mean (PIN(1,:));
 v_ =  mean (PIN(2,:));
 u_o = mean (POUT(1,:));
@@ -34,30 +37,25 @@ end
 
 PIN = cat(1,PIN(1,:),PIN(2,:));
 POUT = cat(1,POUT(1,:),POUT(2,:));
-
+% Calcule de l'homographie 
 Hbefore=homography_solve(PIN,POUT);
-%Hsans=homography_solve(PIN,POUT)
-
 H=inv(Tout)*Hbefore*Tin ;
-%H=homography_solve(PIN,POUT);
 H =H/H(3,3);
-%out = homwarp(H, img);
-%imshow(out)
-
-
 RRT = inv(K)*H;
 Re1= RRT(:,1);
 Re2= RRT(:,2);
 Te = RRT(:,3);
 Re3 = cross(Re1,Re2);
+% Calcule de la proportionalité alpha
 alpha = (nthroot(det([Re1,Re2,Re3]),4));
 R1 = Re1/alpha;
 R2 = Re2/alpha;
 R3 = Re3/alpha^2;
+% Calcule des parametres extrinseque 
 R = [R1,R2,R3];
-% detR= det(R);
 T = Te/alpha ;
 RT = cat(2,R,T);
+% Matrice de projection P en sortie 
 P = alpha*K*RT;
 
 end
